@@ -1,9 +1,14 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon } from "lucide-react";
+import { ChevronsLeft, MenuIcon, Plus, Search, Settings } from "lucide-react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
+import DocumentList from "./document-list";
+import Item from "./item";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import UserBox from "./user-box";
 
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
@@ -12,6 +17,8 @@ const Sidebar = () => {
   const isResizing = useRef(false);
   const [isCollapse, setIsCollapse] = useState(isMobile);
   const [isResetting, setIsResetting] = useState(false);
+
+  const createDocument = useMutation(api.documents.createDocument);
 
   useEffect(() => {
     if (isMobile) {
@@ -70,11 +77,27 @@ const Sidebar = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
+  const onCreateDocument = () => {
+    createDocument({ title: "Untitled" });
+  };
+
   return (
     <>
       <div className={cn("group/sidebar h-screen bg-secondary overflow-y-auto relative flex w-60 flex-col z-50", isResetting && "transition-all ease-in duration-300", isMobile && "w-0")} ref={sidebarRef}>
         <div className={cn("w-6 h-6 text-muted-foreground rounded-sm hover:bg-neutral-300 absolute right-2 top-3 dark:hover:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition", isMobile && "opacity-100")} role="button" onClick={collapse}>
           <ChevronsLeft className="w-6 h-6" />
+        </div>
+
+        <div>
+          <UserBox />
+          <Item label="Search" icon={Search} />
+          <Item label="Settings" icon={Settings} />
+          <Item label="New Document" icon={Plus} onClick={onCreateDocument} />
+        </div>
+
+        <div className="mt-4">
+          <DocumentList />
+          <Item label="Add a page" icon={Plus} onClick={onCreateDocument} />
         </div>
 
         <div className="absolute h-full w-1 right-0 top-0 cursor-ew-resize bg-primary/10 opacity-0 group-hover/sidebar:opacity-100 transition" onMouseDown={handleMouseDown} />
