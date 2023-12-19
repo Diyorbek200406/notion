@@ -1,22 +1,29 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon, Plus, Search, Settings } from "lucide-react";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useMutation } from "convex/react";
 import { useMediaQuery } from "usehooks-ts";
+import { ElementRef, useEffect, useRef, useState } from "react";
+import { ChevronsLeft, MenuIcon, Plus, Search, Settings, Trash } from "lucide-react";
+
 import DocumentList from "./document-list";
 import Item from "./item";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import UserBox from "./user-box";
+
+import { cn } from "@/lib/utils";
+import { api } from "@/convex/_generated/api";
+import { Progress } from "@/components/ui/progress";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import TrashBox from "./trash-box";
 
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
-  const sidebarRef = useRef<ElementRef<"div">>(null);
-  const navbarRef = useRef<ElementRef<"div">>(null);
-  const isResizing = useRef(false);
+
   const [isCollapse, setIsCollapse] = useState(isMobile);
   const [isResetting, setIsResetting] = useState(false);
+
+  const isResizing = useRef(false);
+  const sidebarRef = useRef<ElementRef<"div">>(null);
+  const navbarRef = useRef<ElementRef<"div">>(null);
 
   const createDocument = useMutation(api.documents.createDocument);
 
@@ -81,6 +88,8 @@ const Sidebar = () => {
     createDocument({ title: "Untitled" });
   };
 
+  const arr = [1, 2];
+
   return (
     <>
       <div className={cn("group/sidebar h-screen bg-secondary overflow-y-auto relative flex w-60 flex-col z-50", isResetting && "transition-all ease-in duration-300", isMobile && "w-0")} ref={sidebarRef}>
@@ -98,14 +107,28 @@ const Sidebar = () => {
         <div className="mt-4">
           <DocumentList />
           <Item label="Add a page" icon={Plus} onClick={onCreateDocument} />
+
+          <Popover>
+            <PopoverTrigger className="mt-4 w-full">
+              <Item label="Trash" icon={Trash} />
+            </PopoverTrigger>
+
+            <PopoverContent className="p-0 w-72" side={isMobile ? "bottom" : "right"}>
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="absolute h-full w-1 right-0 top-0 cursor-ew-resize bg-primary/10 opacity-0 group-hover/sidebar:opacity-100 transition" onMouseDown={handleMouseDown} />
+
         <div className="absolute bottom-0 px-2 bg-white/50 dark:bg-black/50 py-4 w-full">
           <div className="flex items-center justify-between">
-            <div>Left</div>
-            <div>Right</div>
+            <div className="flex items-center gap-1 text-[13px]">Left </div>
+
+            <p className="text-[13px] opacity-70">{arr.length}/3</p>
           </div>
+
+          <Progress className="mt-2" value={arr.length >= 3 ? 100 : (arr.length * 100) / 3} />
         </div>
       </div>
 
