@@ -101,6 +101,12 @@ const Sidebar = () => {
         </div>
 
         <div className="absolute h-full w-1 right-0 top-0 cursor-ew-resize bg-primary/10 opacity-0 group-hover/sidebar:opacity-100 transition" onMouseDown={handleMouseDown} />
+        <div className="absolute bottom-0 px-2 bg-white/50 dark:bg-black/50 py-4 w-full">
+          <div className="flex items-center justify-between">
+            <div>Left</div>
+            <div>Right</div>
+          </div>
+        </div>
       </div>
 
       <div className={cn("absolute top-0 z-50 left-60 w-[calc(100% - 240px)]", isResetting && "transition-all ease-in duration-300", isMobile && "w-full left-0")} ref={navbarRef}>
