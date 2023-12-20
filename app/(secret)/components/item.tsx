@@ -1,14 +1,17 @@
 "use client";
 
-import { Id } from "@/convex/_generated/dataModel";
-import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
-import { useUser } from "@clerk/clerk-react";
+import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@clerk/clerk-react";
+import { toast } from "sonner";
+import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
+import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from "lucide-react";
+
 import { cn } from "@/lib/utils";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface ItemProps {
   id?: Id<"documents">;
@@ -23,17 +26,29 @@ interface ItemProps {
 }
 
 const Item = ({ label, id, level = 0, expended, onExpend, onClick, active, documentIcon, icon: Icon }: ItemProps) => {
+  const router = useRouter();
+
   const { user } = useUser();
 
   const createDocument = useMutation(api.documents.createDocument);
+  const archive = useMutation(api.documents.archive);
+
+  const onArchive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    if (!id) return;
+
+    const promise = archive({ id }).then(() => router.push("/documents"));
+
+    toast.promise(promise, { loading: "Archiving document...", success: "Archived document successfully !", error: "Failed to archive document" });
+  };
 
   const onCreateDocument = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
+
     if (!id) return;
+
     createDocument({ title: "Untitled", parentDocument: id }).then((document) => {
-      if (!expended) {
-        onExpend?.();
-      }
+      if (!expended) onExpend?.();
     });
   };
 
@@ -66,7 +81,7 @@ const Item = ({ label, id, level = 0, expended, onExpend, onClick, active, docum
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="w-60" align="start" side="right" forceMount>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={onArchive}>
                 <Trash />
                 Delete
               </DropdownMenuItem>
