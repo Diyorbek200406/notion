@@ -8,7 +8,7 @@ interface DocumentIdPageProps {
   };
 }
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
-  return <div>{params.documentId}</div>;
+  return <div className="mt-24">{params.documentId}</div>;
 };
 
 export default DocumentIdPage;

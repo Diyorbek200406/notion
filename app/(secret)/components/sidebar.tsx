@@ -1,7 +1,7 @@
 "use client";
 
 import { useMediaQuery } from "usehooks-ts";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { ChevronsLeft, MenuIcon, Plus, Search, Settings, Trash } from "lucide-react";
@@ -16,9 +16,11 @@ import { cn } from "@/lib/utils";
 import { api } from "@/convex/_generated/api";
 import { Progress } from "@/components/ui/progress";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Navbar from "./navbar";
 
 const Sidebar = () => {
   const router = useRouter();
+  const params = useParams();
   const isMobile = useMediaQuery("(max-width: 770px)");
   const createDocument = useMutation(api.documents.createDocument);
 
@@ -135,7 +137,7 @@ const Sidebar = () => {
       </div>
 
       <div className={cn("absolute top-0 z-50 left-60 w-[calc(100% - 240px)]", isResetting && "transition-all ease-in duration-300", isMobile && "w-full left-0")} ref={navbarRef}>
-        <nav className="bg-transparent p-2 w-full">{isCollapse && <MenuIcon className="w-6 h-6 text-muted-foreground" role="button" onClick={reset} />}</nav>
+        {!!params.documentId ? <Navbar /> : <nav className="bg-transparent p-2 w-full">{isCollapse && <MenuIcon className="w-6 h-6 text-muted-foreground" role="button" onClick={reset} />}</nav>}
       </div>
     </>
   );
