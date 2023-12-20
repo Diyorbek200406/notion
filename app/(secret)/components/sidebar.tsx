@@ -1,22 +1,26 @@
 "use client";
 
-import { useMutation } from "convex/react";
 import { useMediaQuery } from "usehooks-ts";
+import { useRouter } from "next/navigation";
+import { useMutation } from "convex/react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { ChevronsLeft, MenuIcon, Plus, Search, Settings, Trash } from "lucide-react";
+import { toast } from "sonner";
 
-import DocumentList from "./document-list";
 import Item from "./item";
 import UserBox from "./user-box";
+import TrashBox from "./trash-box";
+import DocumentList from "./document-list";
 
 import { cn } from "@/lib/utils";
 import { api } from "@/convex/_generated/api";
 import { Progress } from "@/components/ui/progress";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import TrashBox from "./trash-box";
 
 const Sidebar = () => {
+  const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 770px)");
+  const createDocument = useMutation(api.documents.createDocument);
 
   const [isCollapse, setIsCollapse] = useState(isMobile);
   const [isResetting, setIsResetting] = useState(false);
@@ -25,14 +29,9 @@ const Sidebar = () => {
   const sidebarRef = useRef<ElementRef<"div">>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
 
-  const createDocument = useMutation(api.documents.createDocument);
-
   useEffect(() => {
-    if (isMobile) {
-      collapse();
-    } else {
-      reset();
-    }
+    if (isMobile) collapse();
+    else reset();
   }, [isMobile]);
 
   const collapse = () => {
@@ -67,7 +66,9 @@ const Sidebar = () => {
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizing.current) return;
+
     let newWidth = e.clientX;
+
     if (newWidth < 240) newWidth = 240;
     if (newWidth > 500) newWidth = 500;
 
@@ -85,7 +86,8 @@ const Sidebar = () => {
   };
 
   const onCreateDocument = () => {
-    createDocument({ title: "Untitled" });
+    const promise = createDocument({ title: "Untitled" }).then((documentId) => router.push(`/documents/${documentId}`));
+    toast.promise(promise, { loading: "Creating a new blank document...", success: "Created a new blank successfully", error: "Couldn't create a blank document" });
   };
 
   const arr = [1, 2];
