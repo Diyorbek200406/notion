@@ -137,7 +137,7 @@ const Sidebar = () => {
       </div>
 
       <div className={cn("absolute top-0 z-50 left-60 w-[calc(100% - 240px)]", isResetting && "transition-all ease-in duration-300", isMobile && "w-full left-0")} ref={navbarRef}>
-        {!!params.documentId ? <Navbar /> : <nav className="bg-transparent p-2 w-full">{isCollapse && <MenuIcon className="w-6 h-6 text-muted-foreground" role="button" onClick={reset} />}</nav>}
+        {!!params.documentId ? <Navbar isCollapse={isCollapse} reset={reset} /> : <nav className="bg-transparent p-2 w-full">{isCollapse && <MenuIcon className="w-6 h-6 text-muted-foreground" role="button" onClick={reset} />}</nav>}
       </div>
     </>
   );
