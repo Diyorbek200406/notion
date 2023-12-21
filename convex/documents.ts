@@ -146,16 +146,13 @@ export const updateFields = mutation({
     if (!identity) throw new Error("Not authenticated");
 
     const userId = identity.subject;
-
     const { id, ...rest } = args;
 
     const existingDocument = await ctx.db.get(id);
 
     if (!existingDocument) throw new Error("Not found");
-
     if (existingDocument.userId !== userId) throw new Error("Unauthorized");
 
-    const updatedDocument = await ctx.db.patch(id, rest);
-    return updatedDocument;
+    return await ctx.db.patch(id, rest);
   },
 });

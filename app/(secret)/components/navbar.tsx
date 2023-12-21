@@ -3,11 +3,14 @@
 import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
 
-import { Loader } from "@/components/ui/loader";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+
+import { Title } from "./title";
 import { MenuIcon } from "lucide-react";
-import Title from "./title";
+import { Loader } from "@/components/ui/loader";
+import Publish from "./publish";
+import { Menu } from "./menu";
 
 interface NavbarProps {
   isCollapse: boolean;
@@ -24,7 +27,7 @@ const Navbar = ({ isCollapse, reset }: NavbarProps) => {
         <Title.Skeleton />
 
         <div className="flex items-center gap-x-2">
-          <Loader />
+          <Menu.Skeleton />
         </div>
       </nav>
     );
@@ -40,7 +43,11 @@ const Navbar = ({ isCollapse, reset }: NavbarProps) => {
         <div className="w-full flex items-center justify-between">
           <Title document={document} />
 
-          <div className="flex items-center gap-x-2"></div>
+          <div className="flex items-center gap-x-2">
+            <Publish document={document} />
+
+            <Menu documentId={document._id} />
+          </div>
         </div>
       </nav>
     </>

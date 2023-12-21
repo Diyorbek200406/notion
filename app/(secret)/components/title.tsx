@@ -1,16 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useRef, useState } from "react";
+import { useMutation } from "convex/react";
+
 import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
-import { useMutation } from "convex/react";
-import { useRef, useState } from "react";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+
 interface TitleProps {
   document: Doc<"documents">;
 }
-const Title = ({ document }: TitleProps) => {
+
+export const Title = ({ document }: TitleProps) => {
   const [title, setTitle] = useState(document.title || "Untitled");
   const [isEditing, setIsEditing] = useState(false);
 
@@ -27,9 +31,7 @@ const Title = ({ document }: TitleProps) => {
     }, 0);
   };
 
-  const disableInput = () => {
-    setIsEditing(false);
-  };
+  const disableInput = () => setIsEditing(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -62,8 +64,6 @@ const Title = ({ document }: TitleProps) => {
     </div>
   );
 };
-
-export default Title;
 
 Title.Skeleton = function TitleSkeleton() {
   return <Skeleton className="w-20 h-8 rounded-md" />;
