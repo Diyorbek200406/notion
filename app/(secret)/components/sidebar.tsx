@@ -89,15 +89,33 @@ const Sidebar = () => {
 
   const onCreateDocument = () => {
     const promise = createDocument({ title: "Untitled" }).then((documentId) => router.push(`/documents/${documentId}`));
-    toast.promise(promise, { loading: "Creating a new blank document...", success: "Created a new blank successfully", error: "Couldn't create a blank document" });
+    toast.promise(promise, {
+      loading: "Creating a new blank document...",
+      success: "Created a new blank successfully",
+      error: "Couldn't create a blank document",
+    });
   };
 
   const arr = [1, 2];
 
   return (
     <>
-      <div className={cn("group/sidebar h-screen bg-secondary overflow-y-auto relative flex w-60 flex-col z-50", isResetting && "transition-all ease-in duration-300", isMobile && "w-0")} ref={sidebarRef}>
-        <div className={cn("w-6 h-6 text-muted-foreground rounded-sm hover:bg-neutral-300 absolute right-2 top-3 dark:hover:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition", isMobile && "opacity-100")} role="button" onClick={collapse}>
+      <div
+        className={cn(
+          "group/sidebar h-screen bg-secondary overflow-y-auto relative flex w-60 flex-col z-50",
+          isResetting && "transition-all ease-in duration-300",
+          isMobile && "w-0",
+        )}
+        ref={sidebarRef}
+      >
+        <div
+          className={cn(
+            "w-6 h-6 text-muted-foreground rounded-sm hover:bg-neutral-300 absolute right-2 top-3 dark:hover:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition",
+            isMobile && "opacity-100",
+          )}
+          role="button"
+          onClick={collapse}
+        >
           <ChevronsLeft className="w-6 h-6" />
         </div>
 
@@ -123,7 +141,10 @@ const Sidebar = () => {
           </Popover>
         </div>
 
-        <div className="absolute h-full w-1 right-0 top-0 cursor-ew-resize bg-primary/10 opacity-0 group-hover/sidebar:opacity-100 transition" onMouseDown={handleMouseDown} />
+        <div
+          className="absolute h-full w-1 right-0 top-0 cursor-ew-resize bg-primary/10 opacity-0 group-hover/sidebar:opacity-100 transition"
+          onMouseDown={handleMouseDown}
+        />
 
         <div className="absolute bottom-0 px-2 bg-white/50 dark:bg-black/50 py-4 w-full">
           <div className="flex items-center justify-between">
@@ -136,8 +157,21 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className={cn("absolute top-0 z-50 left-60 w-[calc(100% - 240px)]", isResetting && "transition-all ease-in duration-300", isMobile && "w-full left-0")} ref={navbarRef}>
-        {!!params.documentId ? <Navbar isCollapse={isCollapse} reset={reset} /> : <nav className="bg-transparent p-2 w-full">{isCollapse && <MenuIcon className="w-6 h-6 text-muted-foreground" role="button" onClick={reset} />}</nav>}
+      <div
+        className={cn(
+          "absolute top-0 z-50 left-60 w-[calc(100% - 240px)]",
+          isResetting && "transition-all ease-in duration-300",
+          isMobile && "w-full left-0",
+        )}
+        ref={navbarRef}
+      >
+        {!!params.documentId ? (
+          <Navbar isCollapse={isCollapse} reset={reset} />
+        ) : (
+          <nav className="bg-transparent p-2 w-full">
+            {isCollapse && <MenuIcon className="w-6 h-6 text-muted-foreground" role="button" onClick={reset} />}
+          </nav>
+        )}
       </div>
     </>
   );
